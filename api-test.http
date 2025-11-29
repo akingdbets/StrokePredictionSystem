@@ -1,0 +1,33 @@
+### 1. 고위험군 데이터 테스트 (위험도 높음)
+# 예상 결과: "경고! 위험도가 높습니다..." (점수 80점 이상)
+# 조건: 혈압 150(높음), 흡연(True), 혈당 130(높음), 활동량 1(낮음), 약물안먹음(False)
+POST http://localhost:8080/api/health/input
+Content-Type: application/json
+
+{
+  "patientId": 1,
+  "systolicBP": 150,
+  "smokingStatus": true,
+  "bloodSugar": 130.5,
+  "bodyComposition": "비만",
+  "activityLevel": 1,
+  "medicationTaken": false
+}
+
+###
+
+### 2. 정상 데이터 테스트 (위험도 낮음)
+# 예상 결과: "데이터 저장 완료..." (점수 낮음)
+# 조건: 혈압 110(정상), 흡연(False), 혈당 90(정상), 활동량 4(높음), 약물먹음(True)
+POST http://localhost:8080/api/health/input
+Content-Type: application/json
+
+{
+  "patientId": 1,
+  "systolicBP": 110,
+  "smokingStatus": false,
+  "bloodSugar": 90.0,
+  "bodyComposition": "표준",
+  "activityLevel": 4,
+  "medicationTaken": true
+}

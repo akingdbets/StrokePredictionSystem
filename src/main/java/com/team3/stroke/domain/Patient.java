@@ -1,0 +1,38 @@
+package com.team3.stroke.domain;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter @Setter
+@NoArgsConstructor
+public class Patient {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    // 1:N Composition 관계 (환자가 삭제되면 건강데이터/위험도 이력도 삭제됨)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<HealthData> healthDataList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Risk> riskHistory = new ArrayList<>();
+
+    // 생성자
+    public Patient(String name) {
+        this.name = name;
+    }
+
+    // 연관관계 편의 메서드
+    public void addRisk(Risk risk) {
+        this.riskHistory.add(risk);
+        risk.setPatient(this);
+    }
+}
