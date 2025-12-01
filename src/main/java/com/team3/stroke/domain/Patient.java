@@ -25,6 +25,15 @@ public class Patient {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Risk> riskHistory = new ArrayList<>();
 
+    // 주치의와의 관계 설정 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
+
+    // 리포트 리스트 추가
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Report> reports = new ArrayList<>();
+
     // 생성자
     public Patient(String name) {
         this.name = name;
