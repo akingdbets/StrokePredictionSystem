@@ -15,12 +15,9 @@ public class HealthDataController {
 
     @PostMapping("/input")
     public String inputData(@RequestBody HealthInputRequest request) {
-        Risk result = riskManager.processHealthDataInput(request);
+        // 이제 반환값이 void이므로 받지 않음
+        riskManager.processHealthDataInput(request);
 
-        if (result.isThresholdExceeded()) {
-            return "경고! 위험도가 높습니다. 현재 점수: " + result.getScore();
-        } else {
-            return "데이터 저장 완료. 현재 점수: " + result.getScore();
-        }
+        return "데이터가 성공적으로 저장되었습니다. 위험도 분석은 자정에 진행됩니다.";
     }
 }
