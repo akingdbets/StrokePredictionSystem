@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,17 +53,24 @@ public class DoctorPanelService {
 
         int score = 0;
         boolean isHighRisk = false;
+        String dateStr = "N/A";
 
         if (latestRisk != null) {
             score = latestRisk.getScore(); // [변경 포인트] int 값 가져오기
             isHighRisk = latestRisk.isThresholdExceeded(); // [변경 포인트] 엔티티 필드 바로 사용
+            if (latestRisk.getCalculatedDate() != null) {
+                dateStr = latestRisk.getCalculatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            }
         }
+
+
 
         return PatientPanelDto.builder()
                 .patientId(patient.getId())
                 .name(patient.getName())
                 .currentRiskScore(score)
                 .isHighRisk(isHighRisk)
+                .recentReportDate(dateStr)
                 .build();
     }
 }

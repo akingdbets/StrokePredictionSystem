@@ -18,7 +18,7 @@ public class RiskScheduler {
 //    }
 
      //(테스트용) 10초마다 실행 (제대로 도는지 확인하고 싶으면 주석 풀고 테스트)
-     @Scheduled(fixedRate = 10000)
+     @Scheduled(fixedRate = 30000)
      public void testSchedule() {
         System.out.println("테스트 스케줄러 실행");
         riskManager.calculateAllPatientsRisk();

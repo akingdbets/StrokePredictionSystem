@@ -11,9 +11,9 @@ public class AlertManager {
         String level = risk.getRiskLevel(); // 주호님 코드에서 가져옴 ("DANGER" or "NORMAL")
 
         // 주호님 코드는 위험하면 "DANGER"로 저장함 -> 우리는 이걸 "WARNING" 상황으로 처리
-        if ("WARNING".equals(level)) {
+        if ("DANGER".equals(level)) {
             System.out.println("🚨 [알림 서비스] 위험 수치 감지! 환자: " + risk.getPatient().getName());
-            return "WARNING"; // 프론트엔드에게 "경고 띄워라"라고 신호 줌
+            return "DANGER"; // 프론트엔드에게 "경고 띄워라"라고 신호 줌
         }
 
         // 정상이면

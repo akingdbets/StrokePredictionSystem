@@ -55,6 +55,22 @@ public class InitDb {
             p1.addRisk(r1); // 편의 메서드로 양방향 연결
             patientRepository.save(p1);
 
+            Risk r_yesterday = new Risk();
+            r_yesterday.setScore(85);
+            r_yesterday.setThresholdExceeded(true);
+            r_yesterday.setCalculatedDate(LocalDateTime.now().minusDays(1));
+            p1.addRisk(r_yesterday);
+
+            // 2. 8일 전 (저위험 - 지난주 비교용)
+            Risk r_lastWeek = new Risk();
+            r_lastWeek.setScore(50);
+            r_lastWeek.setThresholdExceeded(false);
+            r_lastWeek.setCalculatedDate(LocalDateTime.now().minusDays(8));
+            p1.addRisk(r_lastWeek);
+
+            patientRepository.save(p1);
+            System.out.println("✅ [InitDb] 홍길동 과거 이력 데이터 추가 완료");
+
             // --- 환자 2: 이순신 (저위험군, 40점) ---
             Patient p2 = new Patient("이순신");
             p2.setDoctor(doctor);

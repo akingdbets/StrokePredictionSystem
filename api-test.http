@@ -1,13 +1,58 @@
-### 데이터 입력 (결과는 저장만 됨)
+### =================================================================
+### [Feature 1] 사전 준비: 환자별 건강 데이터 입력 및 위험도 계산
+### =================================================================
+
+### 1-1. 홍길동 (ID: 1) -> 고위험 데이터 입력
+# 예상 결과: 위험도 점수 90점 이상, "경고" 메시지
 POST http://localhost:8080/api/health/input
 Content-Type: application/json
 
 {
   "patientId": 1,
-  "systolicBP": 150,
+  "systolicBP": 160,
   "smokingStatus": true,
-  "bloodSugar": 130.5,
+  "bloodSugar": 140.0,
   "bodyComposition": "비만",
   "activityLevel": 1,
   "medicationTaken": false
 }
+
+### 1-2. 이순신 (ID: 2) -> 저위험(정상) 데이터 입력
+# 예상 결과: 위험도 점수 낮음, "저장 완료" 메시지
+POST http://localhost:8080/api/health/input
+Content-Type: application/json
+
+{
+  "patientId": 2,
+  "systolicBP": 110,
+  "smokingStatus": false,
+  "bloodSugar": 90.0,
+  "bodyComposition": "표준",
+  "activityLevel": 5,
+  "medicationTaken": true
+}
+
+### =================================================================
+### [Feature 3] 주치의 환자 패널 조회 테스트
+### =================================================================
+
+### 3-1. 주치의(ID: 1) 패널 조회 - 위험도 순 정렬 (기본)
+# 예상 결과:
+# 1. 홍길동 (점수 높음, DANGER)
+# 2. 이순신 (점수 낮음, NORMAL)
+# 순서로 나와야 성공!
+GET http://localhost:8080/api/doctor/1/panel?sort=RISK
+
+### 3-2. 주치의(ID: 1) 패널 조회 - 이름 순 정렬
+# 예상 결과:
+# 1. 이순신 (ㄱㄴㄷ 순)
+# 2. 홍길동
+# 순서로 나와야 성공!
+GET http://localhost:8080/api/doctor/1/panel?sort=NAME
+
+### [Feature 2] 주간 리포트 조회
+# 예상 결과: "지난주보다 위험도가 증가했습니다" (8일전 50점 vs 어제 85점)
+GET http://localhost:8080/api/report/1?period=WEEKLY
+
+### [Feature 2] 월간 리포트 조회
+GET http://localhost:8080/api/report/1?period=MONTHLY
