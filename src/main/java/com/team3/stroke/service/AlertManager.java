@@ -1,29 +1,25 @@
 package com.team3.stroke.service;
 
-import com.team3.stroke.domain.Risk; //Risk 클래스 가져오기
+import com.team3.stroke.domain.Risk;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AlertManager {
 
-    // 수정된 부분: String이 아니라 'Risk' 객체를 통째로 받습니다.
-    public void checkRiskAndAlert(Risk risk) {
-        String level = risk.getRiskLevel(); // "DANGER", "WARNING", "NORMAL"
-        int score = risk.getScore();
+    // 웹 프론트엔드에 결과를 돌려주기 위해 String을 반환하도록 수정했습니다.
+    public String checkRiskAndAlert(Risk risk) {
+        String level = risk.getRiskLevel(); // 주호님 코드에서 가져옴 ("DANGER" or "NORMAL")
 
-        System.out.println("\n[시스템] 위험도 분석 결과 수신 (점수: " + score + ")");
+        // 주호님 코드는 위험하면 "DANGER"로 저장함 -> 우리는 이걸 "WARNING" 상황으로 처리
+        if ("WARNING".equals(level)) {
+            System.out.println("🚨 [알림 서비스] 위험 수치 감지! 환자: " + risk.getPatient().getName());
+            return "WARNING"; // 프론트엔드에게 "경고 띄워라"라고 신호 줌
+        }
 
-        if ("DANGER".equals(level)) {
-            System.out.println("🚨 [긴급 알림] 뇌졸중 재발 '위험(DANGER)' 단계입니다!");
-            System.out.println("   >> 조치: 주치의에게 환자 데이터를 즉시 전송합니다.");
-            System.out.println("   >> 조치: 보호자에게 비상 연락 문자를 발송합니다.");
-
-        } else if ("WARNING".equals(level)) {
-            System.out.println("⚠️ [주의 알림] '주의(WARNING)' 단계입니다.");
-            System.out.println("   >> 조치: 생활 습관 점검이 필요합니다.");
-
-        } else {
-            System.out.println("✅ [알림 없음] '정상(NORMAL)' 단계입니다. 현재 상태를 유지하세요.");
+        // 정상이면
+        else {
+            System.out.println("✅ [알림 서비스] 정상 범위입니다.");
+            return "NORMAL";
         }
     }
 }

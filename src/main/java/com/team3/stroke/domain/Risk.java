@@ -13,7 +13,7 @@ public class Risk {
     private Long id;
 
     private int score;
-    private String riskLevel; // "NORMAL", "WARNING", "DANGER"
+    private String riskLevel; // "NORMAL", "WARNING"
     private boolean isThresholdExceeded;
     private LocalDateTime calculatedDate;
 

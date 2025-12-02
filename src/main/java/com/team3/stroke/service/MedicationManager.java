@@ -1,22 +1,23 @@
 package com.team3.stroke.service;
 
 import com.team3.stroke.domain.Medication;
-import com.team3.stroke.domain.Patient; // Patient도 필요하면 import
 import org.springframework.stereotype.Service;
 
 @Service
 public class MedicationManager {
 
-    // 환자 정보까지 같이 받아서 누구에게 알림을 보낼지 명확히 함
-    public void checkMedicationTime(String currentTime, Medication medication, String patientName) {
-        // 실제로는 스케줄러가 1분마다 이 함수를 호출한다고 가정
-        if (currentTime.equals(medication.getScheduledTime())) {
-            sendAlarm(medication.getMedicineName(), patientName);
-        }
-    }
+    // 버튼을 눌렀을 때(시간 시뮬레이션) 호출됨
+    public String checkMedicationTime(String simulatedTime, Medication medication, String patientName) {
 
-    private void sendAlarm(String medicineName, String patientName) {
-        System.out.println("\n💊 [복약 알림] " + patientName + "님, '" + medicineName + "' 복용 시간입니다!");
-        System.out.println("   >> 알림이 스마트폰으로 전송되었습니다.");
+        // 로직: 설정된 시간과 시뮬레이션 시간이 같은지 확인
+        if (simulatedTime.equals(medication.getScheduledTime())) {
+
+            // 메시지에 "식후 30분"이라는 멘트를 포함시켜서 의학적 느낌을 줌
+            String message = "💊 " + patientName + "님! " + medication.getMedicineName() + " 복용 시간입니다. (식후 30분)";
+            System.out.println(message);
+            return message;
+        }
+
+        return null; // 시간 안 맞으면 아무것도 안 함
     }
 }

@@ -15,8 +15,9 @@ import java.time.LocalDateTime;
 @Transactional
 public class RiskManager {
 
-    private final PatientRepository patientRepository;
+    private final Patient Repository patientRepository;
     private final ParameterRepository parameterRepository; // 변경됨
+    private final AlertManager alertManager;
 
     public Risk processHealthDataInput(HealthInputRequest request) {
         // 1. 환자 조회
@@ -46,16 +47,14 @@ public class RiskManager {
         // 4. Risk 생성 및 저장
         Risk risk = new Risk();
         risk.setScore(score);
-        risk.setRiskLevel(exceeded ? "DANGER" : "NORMAL");
+        risk.setRiskLevel(exceeded ? "WARNING" : "NORMAL");
         risk.setThresholdExceeded(exceeded);
         risk.setCalculatedDate(LocalDateTime.now());
 
         patient.addRisk(risk);
 
         // 5. 알림
-        if (exceeded) {
-            System.out.println("[ALARM] " + patient.getName() + "님 위험도 경고! (" + score + "점)");
-        }
+        alertManager.checkRiskAndAlert(risk);
 
         return risk;
     }
