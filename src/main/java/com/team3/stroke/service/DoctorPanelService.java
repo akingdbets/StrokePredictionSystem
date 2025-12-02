@@ -1,8 +1,11 @@
 package com.team3.stroke.service;
 
+import com.team3.stroke.domain.HealthData;
 import com.team3.stroke.domain.Patient;
+import com.team3.stroke.domain.Report;
 import com.team3.stroke.domain.Risk;
 import com.team3.stroke.dto.PatientPanelDto;
+import com.team3.stroke.dto.PatientReportDetailDto;
 import com.team3.stroke.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,4 +68,49 @@ public class DoctorPanelService {
                 .isHighRisk(isHighRisk)
                 .build();
     }
+
+
+    //환자 상세 리포트 조회
+    public PatientReportDetailDto getPatientReportDetail(Long patientId) {
+        // 1. 환자 조회
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 환자입니다."));
+
+        // 2. 최신 위험도 (Risk)
+        Risk latestRisk = patient.getRiskHistory().stream()
+                .max(Comparator.comparing(Risk::getCalculatedDate))
+                .orElse(null);
+
+        // 3. [수정] 최신 건강 데이터 (HealthData) - recordDate 기준 정렬
+        HealthData latestHealth = patient.getHealthDataList().stream()
+                .max(Comparator.comparing(HealthData::getRecordDate)) // recordedAt -> recordDate
+                .orElse(null);
+
+        // 4. 최신 리포트/메모 (Report)
+        Report latestReport = patient.getReports().stream()
+                .max(Comparator.comparing(Report::getCreatedDate))
+                .orElse(null);
+
+        // 5. DTO 변환
+        return PatientReportDetailDto.builder()
+                .patientId(patient.getId())
+                .name(patient.getName())
+                .doctorName(patient.getDoctor() != null ? patient.getDoctor().getName() : "미배정")
+
+                // 위험도 정보
+                .currentRiskScore(latestRisk != null ? latestRisk.getScore() : 0)
+                .riskLevel(latestRisk != null ? latestRisk.getRiskLevel() : "UNKNOWN")
+
+                // [수정] 건강 데이터 매핑
+                .recentSystolicBP(latestHealth != null ? latestHealth.getSystolicBP() : 0.0)
+                .recentBloodSugar(latestHealth != null ? latestHealth.getBloodSugar() : 0.0f)
+                .isSmoker(latestHealth != null && latestHealth.isSmokingStatus())
+                .lastCheckupDate(latestHealth != null ? latestHealth.getRecordDate() : null)
+
+                // 소견 정보
+                .doctorMemo(latestReport != null ? latestReport.getDoctorMemo() : "등록된 소견이 없습니다.")
+                .lastReportDate(latestReport != null ? latestReport.getCreatedDate() : null)
+                .build();
+    }
+
 }

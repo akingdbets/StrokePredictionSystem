@@ -1,6 +1,7 @@
 package com.team3.stroke.controller;
 
 import com.team3.stroke.dto.PatientPanelDto;
+import com.team3.stroke.dto.PatientReportDetailDto;
 import com.team3.stroke.service.DoctorPanelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,13 @@ public class DoctorPanelController {
 
         List<PatientPanelDto> panelData = doctorPanelService.getPatientPanel(doctorId, sort);
         return ResponseEntity.ok(panelData);
+    }
+
+    // [추가] 특정 환자 상세 리포트 조회 API
+    // GET /api/doctor/patient/{patientId}
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<PatientReportDetailDto> viewPatientDetail(@PathVariable Long patientId) {
+        PatientReportDetailDto reportDetail = doctorPanelService.getPatientReportDetail(patientId);
+        return ResponseEntity.ok(reportDetail);
     }
 }
