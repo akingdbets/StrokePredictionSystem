@@ -42,7 +42,7 @@ public class ReportService {
         List<Risk> prevLogs = filterRiskByDate(allHistory, prevStartDate, startDate);
 
         // 3. 분석 수행
-        return analyzeData(currentLogs, prevLogs, period, days);
+        return analyzeData(currentLogs, prevLogs, period);
     }
 
     private List<Risk> filterRiskByDate(List<Risk> history, LocalDateTime start, LocalDateTime end) {
@@ -51,7 +51,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    private ReportResponseDto analyzeData(List<Risk> current, List<Risk> prev, String period, int days) {
+    private ReportResponseDto analyzeData(List<Risk> current, List<Risk> prev, String period) {
         // A. 합계 및 알림 횟수 계산
         int totalScore = current.stream().mapToInt(Risk::getScore).sum();
         int alertCount = (int) current.stream().filter(Risk::isThresholdExceeded).count();
