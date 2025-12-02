@@ -1,9 +1,6 @@
 package com.team3.stroke;
 
-import com.team3.stroke.domain.Doctor;   // 추가
-import com.team3.stroke.domain.Parameter;
-import com.team3.stroke.domain.Patient;
-import com.team3.stroke.domain.Risk;     // 추가
+import com.team3.stroke.domain.*;
 import com.team3.stroke.repository.DoctorRepository; // 추가
 import com.team3.stroke.repository.ParameterRepository;
 import com.team3.stroke.repository.PatientRepository;
@@ -13,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional; // 연관관계 설정을 위해 권장
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +69,16 @@ public class InitDb {
 
             patientRepository.save(p1);
             System.out.println("✅ [InitDb] 홍길동 과거 이력 데이터 추가 완료");
+
+            // InitDb.java
+            String nextMinute = LocalTime.now().plusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+            Medication med1 = new Medication("아스피린", nextMinute); // 1분 뒤 알림
+            p1.addMedication(med1);
+
+            System.out.println("💊 [InitDb] 홍길동에게 '" + nextMinute + "' 복용 알림 설정 완료!");
+
+            patientRepository.save(p1);
 
             // --- 환자 2: 이순신 (저위험군, 40점) ---
             Patient p2 = new Patient("이순신");

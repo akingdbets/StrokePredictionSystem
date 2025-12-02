@@ -44,4 +44,11 @@ public class Patient {
         this.riskHistory.add(risk);
         risk.setPatient(this);
     }
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Medication> medications = new ArrayList<>();
+
+    public void addMedication(Medication medication) {
+        this.medications.add(medication);
+        medication.setPatient(this);
+    }
 }
